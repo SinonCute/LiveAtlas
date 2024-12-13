@@ -82,7 +82,7 @@ window.liveAtlasLoaded = true;
 				: store.state.servers.keys().next().value;
 
 			if (serverName !== lastSegment) {
-				window.history.replaceState({}, '', `/${serverName}${window.location.hash}`);
+				window.history.replaceState({}, '', `${currentPath}/${serverName}${window.location.hash}`);
 			}
 
 			store.commit(MutationTypes.SET_CURRENT_SERVER, serverName);
