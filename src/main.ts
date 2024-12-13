@@ -68,12 +68,21 @@ window.liveAtlasLoaded = true;
 		await store.dispatch(ActionTypes.INIT, config);
 
 		if (store.state.servers.size > 1) {
-			const lastSegment = window.location.pathname.split('/').pop(),
-				serverName = lastSegment && store.state.servers.has(lastSegment) ? lastSegment : store.state.servers.keys().next().value;
+			let currentPath = window.location.pathname;
 
-			//Update url if server doesn't exist
+			if (currentPath.endsWith('/')) {
+				currentPath = currentPath.slice(0, -1);
+				window.history.replaceState({}, '', currentPath + window.location.hash);
+			}
+
+			const lastSegment = currentPath.split('/').filter(Boolean).pop();
+
+			const serverName = lastSegment && store.state.servers.has(lastSegment)
+				? lastSegment
+				: store.state.servers.keys().next().value;
+
 			if (serverName !== lastSegment) {
-				window.history.replaceState({}, '', serverName + window.location.hash);
+				window.history.replaceState({}, '', `/${serverName}${window.location.hash}`);
 			}
 
 			store.commit(MutationTypes.SET_CURRENT_SERVER, serverName);
